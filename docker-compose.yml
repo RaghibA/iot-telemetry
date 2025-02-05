@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  db:
+    env_file:
+      - .env
+    image: postgres:16
+    container_name: iot-telem-db
+    restart: always # restart db in case of error
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - iot-telemetry-postgres:/var/lib/postgresql/data
+  authn-service:
+    env_file: 
+      - .env
+    build: 
+      context: ./authn-service
+    environment:
+      - PORT=${AUTH_PORT}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_PORT=${POSTGRES_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "${AUTH_PORT}:${AUTH_PORT}"
+    restart: always
+    depends_on:
+      - db
+
+volumes:
+  iot-telemetry-postgres:
