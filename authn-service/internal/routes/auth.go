@@ -13,7 +13,7 @@ func Auth(r *gin.Engine) {
 		userRouter.POST("/register", handlers.RegisterUserHandler)
 		userRouter.POST("/login", handlers.LoginHandler)
 		userRouter.POST("/access-token", middleware.Authenticate(), handlers.RefreshHandler)
-		userRouter.POST("/logout")
-		userRouter.DELETE("/deactivate")
+		userRouter.POST("/logout", handlers.LogoutHandler)
+		userRouter.DELETE("/deactivate", middleware.Authenticate(), handlers.DeactivateHandler)
 	}
 }

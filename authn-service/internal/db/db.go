@@ -18,6 +18,7 @@ type Database interface {
 	Where(query interface{}, args ...interface{}) *gorm.DB
 	Model(model interface{}) *gorm.DB
 	Count(count *int64) *gorm.DB
+	Delete(value interface{}, conds ...interface{}) *gorm.DB
 }
 
 type DbInstance struct { // DbInstance holds ref to a type that implements Database interface
