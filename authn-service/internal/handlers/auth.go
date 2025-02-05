@@ -136,7 +136,15 @@ func RegisterUserHandler(c *gin.Context) {
 		UserID:   uuid.New().String(),
 	}
 
-	db.IotDb.Db.Create(&user)
+	err = db.IotDb.Db.Create(&user).Error
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Internal server error",
+			"code":    500004,
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"message":  "Account Created",
 		"username": user.Username,
@@ -201,5 +209,36 @@ func LoginHandler(c *gin.Context) {
 }
 
 func RefreshHandler(c *gin.Context) {
+	var user models.User
+	userId, ok := c.Get("userID")
+	log.Println(userId)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
+			"code":    500004,
+		})
+		return
+	}
 
+	err := db.IotDb.Db.Where("user_id = ?", userId).First(&user).Error
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "unable to find user",
+			"code":    404001,
+		})
+		return
+	}
+
+	accessToken, err := utils.GenerateJWT(true, user, time.Now().Add(time.Minute*15).Unix(), time.Now().Unix())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
+			"code":    500005,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"accessToken": accessToken,
+	})
 }

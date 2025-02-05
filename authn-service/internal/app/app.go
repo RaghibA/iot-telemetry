@@ -19,7 +19,7 @@ func Run() {
 	r := gin.Default()
 
 	// Register router groups
-	routes.User(r)
+	routes.Auth(r)
 
-	r.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
+	r.Run(fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT")))
 }

@@ -22,6 +22,7 @@ services:
       context: ./authn-service
     environment:
       - PORT=${AUTH_PORT}
+      - HOST=${AUTH_HOST}
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
       - DB_NAME=${POSTGRES_DB}
