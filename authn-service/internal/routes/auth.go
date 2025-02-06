@@ -7,7 +7,7 @@ import (
 )
 
 func Auth(r *gin.Engine) {
-	userRouter := r.Group("/auth")
+	userRouter := r.Group("/auth", middleware.Monitoring())
 	{
 		userRouter.GET("/health", handlers.HealthHandler)
 		userRouter.POST("/register", handlers.RegisterUserHandler)
