@@ -14,15 +14,15 @@ services:
   kafka:
     image: bitnami/kafka:3.0.0
     ports:
-      - "9093:9093"
+      - "${KAFKA_PORT}:${KAFKA_PORT}"
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ADVERTISED_HOST=localhost
+      # - ADVERTISED_HOST=localhost
       - ALLOW_PLAINTEXT_LISTENER=yes
     healthcheck:
       test: [ "CMD-SHELL", "kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --list" ]
@@ -54,12 +54,12 @@ services:
     build:
       context: ./authn-service
     environment:
-      - PORT=${AUTH_PORT}
-      - HOST=${AUTH_HOST}
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
       - DB_NAME=${POSTGRES_DB}
       - DB_PORT=${POSTGRES_PORT}
+      - PORT=${AUTH_PORT}
+      - HOST=${AUTH_HOST}
       - JWT_SECRET=${JWT_SECRET}
     ports:
       - "${AUTH_PORT}:${AUTH_PORT}"
@@ -73,9 +73,15 @@ services:
     build:
       context: ./iot-admin
     environment:
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_PORT=${POSTGRES_PORT}
       - PORT=${IOT_ADMIN_PORT}
       - HOST=${IOT_ADMIN_HOST}
       - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_PORT=${KAFKA_PORT}
+      - KAFKA_HOST=${KAFKA_HOST}
     ports:
       - "${IOT_ADMIN_PORT}:${IOT_ADMIN_PORT}"
     restart: always

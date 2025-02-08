@@ -15,5 +15,6 @@ func Auth(r *gin.Engine) {
 		userRouter.POST("/access-token", middleware.Authenticate(), handlers.RefreshHandler)
 		userRouter.POST("/logout", handlers.LogoutHandler)
 		userRouter.DELETE("/deactivate", middleware.Authenticate(), handlers.DeactivateHandler)
+		userRouter.GET("/api-key", middleware.Authenticate(), handlers.GenerateAPIKeyHandler)
 	}
 }

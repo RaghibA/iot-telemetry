@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/RaghibA/iot-telemetry/authn-service/internal/models"
+	"github.com/RaghibA/iot-telemetry/iot-admin/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -19,7 +19,6 @@ type Database interface {
 	Model(model interface{}) *gorm.DB
 	Count(count *int64) *gorm.DB
 	Delete(value interface{}, conds ...interface{}) *gorm.DB
-	Update(column string, conds interface{}) *gorm.DB
 }
 
 type DbInstance struct { // DbInstance holds ref to a type that implements Database interface
@@ -28,10 +27,18 @@ type DbInstance struct { // DbInstance holds ref to a type that implements Datab
 
 var IotDb DbInstance
 
-func UserMigrate() {
-	err := IotDb.Db.AutoMigrate(&models.User{})
+func DeviceMigrate() {
+	err := IotDb.Db.AutoMigrate(&models.Device{})
 	if err != nil {
-		log.Println("failed to auto-migrate user model:", err)
+		log.Println("failed to auto-migrate device model:", err)
+	}
+	log.Println("User table migration complete")
+}
+
+func BucketMigrate() {
+	err := IotDb.Db.AutoMigrate(&models.Device{})
+	if err != nil {
+		log.Println("failed to auto-migrate bucket model:", err)
 	}
 	log.Println("User table migration complete")
 }
@@ -53,7 +60,7 @@ func Connect() {
 		panic("failed to connect to postgres")
 	}
 
-	log.Println("USER DB Connected")
+	log.Println("Admin DB Connected")
 
 	IotDb = DbInstance{
 		Db: db,

@@ -12,7 +12,7 @@ import (
 )
 
 func Run() {
-	log.Println("Running service")
+	log.Println("Starting auth service")
 
 	monitoring.InitPrometheus()
 

@@ -8,4 +8,5 @@ type User struct {
 	Username string
 	Password []byte
 	Email    string
+	APIKey   string
 }

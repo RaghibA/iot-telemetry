@@ -1,7 +1,9 @@
 package main
 
-import "log"
+import (
+	"github.com/RaghibA/iot-telemetry/iot-admin/internal/app"
+)
 
 func main() {
-	log.Println("hello")
+	app.Run()
 }

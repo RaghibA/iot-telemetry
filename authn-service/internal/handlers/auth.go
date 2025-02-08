@@ -129,11 +129,30 @@ func RegisterUserHandler(c *gin.Context) {
 		return
 	}
 
+	// issue api key for device & store hashed key in db
+	apiKey, err := utils.GenerateAPIKey()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500005,
+		})
+		return
+	}
+
+	hashedKey, err := utils.HashAPIKey(apiKey)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500006,
+		})
+	}
+
 	user := models.User{
 		Username: userBody.Username,
 		Password: hashedPassword,
 		Email:    userBody.Email,
 		UserID:   uuid.New().String(),
+		APIKey:   hashedKey,
 	}
 
 	err = db.IotDb.Db.Create(&user).Error
@@ -149,6 +168,7 @@ func RegisterUserHandler(c *gin.Context) {
 		"message":  "Account Created",
 		"username": user.Username,
 		"email":    user.Email,
+		"apiKey":   apiKey,
 	})
 }
 
@@ -192,7 +212,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	refreshToken, err := utils.GenerateJWT(false, account, time.Now().Add(time.Minute*15).Unix(), time.Now().Unix())
+	refreshToken, err := utils.GenerateJWT(false, account, time.Now().Add(time.Minute*30).Unix(), time.Now().Unix())
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -283,4 +303,48 @@ func DeactivateHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusNoContent, gin.H{})
+}
+
+func GenerateAPIKeyHandler(c *gin.Context) {
+	apiKey, err := utils.GenerateAPIKey()
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500001,
+		})
+		return
+	}
+
+	hashedKey, err := utils.HashAPIKey(apiKey)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500002,
+		})
+		return
+	}
+
+	userId, ok := c.Get("userID")
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500003,
+		})
+		return
+	}
+
+	err = db.IotDb.Db.Model(&models.User{}).Where("user_id = ?", userId).Update("api_key", hashedKey).Error
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500004,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"apiKey": apiKey,
+	})
 }
