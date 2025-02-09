@@ -35,12 +35,12 @@ func DeviceMigrate() {
 	log.Println("User table migration complete")
 }
 
-func BucketMigrate() {
-	err := IotDb.Db.AutoMigrate(&models.Device{})
+func ACLMigrate() {
+	err := IotDb.Db.AutoMigrate(&models.KafkaACL{})
 	if err != nil {
-		log.Println("failed to auto-migrate bucket model:", err)
+		log.Println("failed to auto-migrate ACL model:", err)
 	}
-	log.Println("User table migration complete")
+	log.Println("ACL table migration complete")
 }
 
 func Connect() {

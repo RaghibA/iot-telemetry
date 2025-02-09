@@ -18,6 +18,7 @@ func Run() {
 
 	db.Connect()
 	db.UserMigrate()
+	db.ACLMigrate()
 
 	r := gin.Default()
 

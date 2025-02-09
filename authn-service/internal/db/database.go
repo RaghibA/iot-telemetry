@@ -36,6 +36,14 @@ func UserMigrate() {
 	log.Println("User table migration complete")
 }
 
+func ACLMigrate() {
+	err := IotDb.Db.AutoMigrate(&models.KafkaACL{})
+	if err != nil {
+		log.Println("failed to auto-migrate ACL model:", err)
+	}
+	log.Println("ACL table migration complete")
+}
+
 func Connect() {
 	dsn := fmt.Sprintf("host=db user=%s password=%s dbname=%s port=%v sslmode=disable TimeZone=UTC",
 		os.Getenv("DB_USER"),

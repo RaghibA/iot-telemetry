@@ -68,6 +68,16 @@ func RegisterDeviceHandler(c *gin.Context) {
 		return
 	}
 
+	var user models.User
+	err = db.IotDb.Db.Where("user_id = ?", userId).First(&user).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Errro",
+			"code":  500004,
+		})
+		return
+	}
+
 	if ct > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "You already have a device with this name",
@@ -97,6 +107,15 @@ func RegisterDeviceHandler(c *gin.Context) {
 		TopicName:  topicName,
 	}
 
+	acl := models.KafkaACL{
+		UserID:    userId.(string),
+		DeviceID:  deviceId,
+		APIKey:    user.APIKey,
+		TopicName: topicName,
+		Write:     true,
+		Read:      true,
+	}
+
 	err = db.IotDb.Db.Create(&device).Error
 	if err != nil {
 		log.Println(err)
@@ -104,6 +123,17 @@ func RegisterDeviceHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Internal Server Error",
 			"code":  500003,
+		})
+		return
+	}
+
+	err = db.IotDb.Db.Create(&acl).Error
+	if err != nil {
+		log.Println(err)
+		_ = kafka.DeleteTopic(topicName) // roll back topic if db write fails
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500005,
 		})
 		return
 	}
@@ -201,6 +231,25 @@ func DeleteDeviceHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Internal Server Error",
 			"code":  500003,
+		})
+		return
+	}
+
+	var acl models.KafkaACL
+	err = db.IotDb.Db.Where("user_id = ? AND device_id = ?", userId, deviceId).First(&acl).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500004,
+		})
+		return
+	}
+
+	err = db.IotDb.Db.Delete(&acl).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500005,
 		})
 		return
 	}

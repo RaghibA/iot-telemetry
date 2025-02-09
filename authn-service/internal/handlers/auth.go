@@ -302,6 +302,8 @@ func DeactivateHandler(c *gin.Context) {
 		return
 	}
 
+	//! Make some cascading delete for all user resources
+
 	c.JSON(http.StatusNoContent, gin.H{})
 }
 
@@ -335,6 +337,16 @@ func GenerateAPIKeyHandler(c *gin.Context) {
 	}
 
 	err = db.IotDb.Db.Model(&models.User{}).Where("user_id = ?", userId).Update("api_key", hashedKey).Error
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+			"code":  500004,
+		})
+		return
+	}
+
+	err = db.IotDb.Db.Model(&models.KafkaACL{}).Where("user_id = ?", userId).Update("api_key", hashedKey).Error
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{

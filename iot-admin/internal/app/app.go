@@ -15,7 +15,7 @@ func Run() {
 
 	db.Connect()
 	db.DeviceMigrate()
-	db.BucketMigrate()
+	db.ACLMigrate()
 
 	r := gin.Default()
 
