@@ -9,6 +9,13 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+/**
+ * Generates new JWT with claims and user metadata
+ *
+ * @params (isAccessToken, account, exp, iat): accesstoken vs cookie, account for additional
+ * 		metadata, expiration time, issued at time
+ * @output (string, error): JWT string, error if signing fails
+ */
 func GenerateJWT(isAccessToken bool, account models.User, exp int64, iat int64) (string, error) {
 	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
 
@@ -33,6 +40,12 @@ func GenerateJWT(isAccessToken bool, account models.User, exp int64, iat int64) 
 	return signed, nil
 }
 
+/**
+ * Authenticates JWT token by verifying signature
+ *
+ * @params tokenString: JWT token
+ * @output (jwt.MapClaims, error): if verified returns map of claims, otherwise returns err
+ */
 func AuthenticateToken(tokenString string) (jwt.MapClaims, error) {
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {

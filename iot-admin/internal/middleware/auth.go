@@ -9,6 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/**
+ * Authenticates admin requests via access tokens
+ *
+ * @output - gin.HandlerFunc as middleware
+ */
 func Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, err := c.Cookie("refresh_token")

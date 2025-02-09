@@ -28,6 +28,12 @@ type DbInstance struct { // DbInstance holds ref to a type that implements Datab
 
 var IotDb DbInstance
 
+/**
+ * Migration Scripts: Users, ACLs
+ *
+ * Gorm Auto-migrate from models
+ */
+
 func UserMigrate() {
 	err := IotDb.Db.AutoMigrate(&models.User{})
 	if err != nil {
@@ -44,7 +50,11 @@ func ACLMigrate() {
 	log.Println("ACL table migration complete")
 }
 
+/**
+ * Init DB Connection
+ */
 func Connect() {
+	// Generate DSN from env vars
 	dsn := fmt.Sprintf("host=db user=%s password=%s dbname=%s port=%v sslmode=disable TimeZone=UTC",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASS"),
@@ -53,6 +63,7 @@ func Connect() {
 	)
 
 	//! ADD RETRY LOGIC
+	// Open connection
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Error),
 	})
@@ -63,6 +74,7 @@ func Connect() {
 
 	log.Println("USER DB Connected")
 
+	// Store reference to db connection in IotDb
 	IotDb = DbInstance{
 		Db: db,
 	}

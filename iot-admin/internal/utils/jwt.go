@@ -8,6 +8,12 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+/**
+ * Authenticates JWT Bearer token
+ *
+ * @params tokenString: JWT token from 'Authorization' request header
+ * @output (jwt.MapClaims, error): claims map if signature validated, otherwise error
+ */
 func AuthenticateToken(tokenString string) (jwt.MapClaims, error) {
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {

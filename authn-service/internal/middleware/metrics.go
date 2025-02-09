@@ -8,6 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/**
+ * Metric monitoring with prometheus
+ *
+ * @output - gin.HandlerFunc as middleware
+ */
 func Monitoring() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()

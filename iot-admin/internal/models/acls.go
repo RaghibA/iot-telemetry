@@ -2,6 +2,11 @@ package models
 
 import "gorm.io/gorm"
 
+/**
+ * KafkaACL Schema
+ *
+ * Init at device creation
+ */
 type KafkaACL struct {
 	gorm.Model
 	UserID    string

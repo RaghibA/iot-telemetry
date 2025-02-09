@@ -14,18 +14,19 @@ import (
 func Run() {
 	log.Println("Starting auth service")
 
+	// Init Prometheus monitoring
 	monitoring.InitPrometheus()
 
+	// Start DB connection & auto-migration
 	db.Connect()
 	db.UserMigrate()
 	db.ACLMigrate()
 
+	// Init gin & register auth routes
 	r := gin.Default()
-
-	// Register router groups
 	routes.Auth(r)
-
 	r.GET("/auth/metrics", gin.WrapH(monitoring.PrometheusHandler()))
 
+	// Start listening
 	r.Run(fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT")))
 }

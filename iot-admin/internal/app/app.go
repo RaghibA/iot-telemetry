@@ -13,13 +13,15 @@ import (
 func Run() {
 	log.Println("Starting admin service")
 
+	// Connect DB & run migrations
 	db.Connect()
 	db.DeviceMigrate()
 	db.ACLMigrate()
 
+	// Init router & attach admin routes
 	r := gin.Default()
-
 	routes.Admin(r)
 
+	// start admin listener
 	r.Run(fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT")))
 }

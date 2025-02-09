@@ -9,10 +9,22 @@ import (
 	"github.com/IBM/sarama"
 )
 
+/**
+ * Generates a topic name based with 'topic.<deviceName>.<deviceId>.read' convention
+ *
+ * @params (deviceName, deviceId): ensures topic names are unique
+ * @output string: single string for topic name
+ */
 func GenerateTopicName(deviceName string, deviceId string) string {
 	return fmt.Sprintf("topic.%s.%s.read", strings.ReplaceAll(deviceName, " ", "-"), deviceId)
 }
 
+/**
+ * Creates A topic in kafka
+ *
+ * @params topicName: topic name string defined by topic generation convention
+ * @output error: error if topic generation fails
+ */
 func CreateTopic(topicName string) error {
 	broker := []string{fmt.Sprintf("%s:%s", os.Getenv("KAFKA_HOST"), os.Getenv("KAFKA_PORT"))}
 
@@ -38,6 +50,12 @@ func CreateTopic(topicName string) error {
 	return nil
 }
 
+/**
+ * deletes device topic from kafka
+ *
+ * @params topicName: topic name used to remove topic from kafka server
+ * @output error: error if deletion fails
+ */
 func DeleteTopic(topicName string) error {
 	broker := []string{fmt.Sprintf("%s:%s", os.Getenv("KAFKA_HOST"), os.Getenv("KAFKA_PORT"))}
 

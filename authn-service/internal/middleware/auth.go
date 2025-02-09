@@ -8,6 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/**
+ * Authenticates user via cookie
+ *
+ * @output - gin.HandlerFunc as middleware
+ */
 func Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := c.Cookie("refresh_token")

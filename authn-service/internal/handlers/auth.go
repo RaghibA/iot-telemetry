@@ -14,6 +14,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+/**
+ * Handler Res/Req body
+ */
 type RegisterBody struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -25,6 +28,12 @@ type LoginBody struct {
 	Password string `json:"password"`
 }
 
+/**
+ * Checks if an email already exists in DB
+ *
+ * @param email String - email to be checked
+ * @output (bool, error) - true if email in use; error if db fails
+ */
 func emailInUse(email string) (bool, error) {
 	var ct int64
 
@@ -35,6 +44,12 @@ func emailInUse(email string) (bool, error) {
 	return ct > 0, nil
 }
 
+/**
+ * Checks if an username already exists in DB
+ *
+ * @param username String - username to be checked
+ * @output (bool, error) - true if username in use; error if db fails
+ */
 func usernameInUse(username string) (bool, error) {
 	var ct int64
 
@@ -45,12 +60,20 @@ func usernameInUse(username string) (bool, error) {
 	return ct > 0, nil
 }
 
+/**
+ * Health Check Handler
+ */
 func HealthHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Health OK",
 	})
 }
 
+/**
+ * Creates user, stores credentials
+ *
+ * @params c *gin.Context
+ */
 func RegisterUserHandler(c *gin.Context) {
 	var userBody RegisterBody
 	validate := validator.New()
@@ -120,6 +143,7 @@ func RegisterUserHandler(c *gin.Context) {
 		return
 	}
 
+	// Hash Password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userBody.Password), 14)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -129,7 +153,7 @@ func RegisterUserHandler(c *gin.Context) {
 		return
 	}
 
-	// issue api key for device & store hashed key in db
+	// Issue APIKey & hash
 	apiKey, err := utils.GenerateAPIKey()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -155,6 +179,7 @@ func RegisterUserHandler(c *gin.Context) {
 		APIKey:   hashedKey,
 	}
 
+	// Add user to DB
 	err = db.IotDb.Db.Create(&user).Error
 	if err != nil {
 		log.Println(err)
@@ -172,6 +197,11 @@ func RegisterUserHandler(c *gin.Context) {
 	})
 }
 
+/**
+ * Uses credentials to authenticate user, sets cookie
+ *
+ * @params c *gin.Context
+ */
 func LoginHandler(c *gin.Context) {
 	var loginCreds LoginBody
 
@@ -202,16 +232,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := utils.GenerateJWT(true, account, time.Now().Add(time.Hour*24*7).Unix(), time.Now().Unix())
-	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "internal server error",
-			"code":    500003,
-		})
-		return
-	}
-
+	// Generate cookie
 	refreshToken, err := utils.GenerateJWT(false, account, time.Now().Add(time.Minute*30).Unix(), time.Now().Unix())
 	if err != nil {
 		log.Println(err)
@@ -224,11 +245,16 @@ func LoginHandler(c *gin.Context) {
 
 	c.SetCookie("refresh_token", refreshToken, 60*60*24*7, "/", "", true, true) // 7 days
 	c.JSON(http.StatusOK, gin.H{
-		"access_token": accessToken,
+		"message": "Successfully logged in",
 	})
 }
 
-func RefreshHandler(c *gin.Context) {
+/**
+ * Issues access token for admin requests
+ *
+ * @params c *gin.Context
+ */
+func AccessTokenHandler(c *gin.Context) {
 	var user models.User
 	userId, ok := c.Get("userID")
 	log.Println(userId)
@@ -249,6 +275,7 @@ func RefreshHandler(c *gin.Context) {
 		return
 	}
 
+	// generate access token
 	accessToken, err := utils.GenerateJWT(true, user, time.Now().Add(time.Minute*15).Unix(), time.Now().Unix())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -263,7 +290,13 @@ func RefreshHandler(c *gin.Context) {
 	})
 }
 
+/**
+ * Logs user out & deletes cookie
+ *
+ * @params c *gin.Context
+ */
 func LogoutHandler(c *gin.Context) {
+	// Delete cookie
 	c.SetCookie("refresh_token", "", -1, "/", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
@@ -271,6 +304,11 @@ func LogoutHandler(c *gin.Context) {
 	})
 }
 
+/**
+ * Deletes account & associated resources
+ *
+ * @params c *gin.Context
+ */
 func DeactivateHandler(c *gin.Context) {
 	userId, ok := c.Get("userID")
 	if !ok {
@@ -307,6 +345,11 @@ func DeactivateHandler(c *gin.Context) {
 	c.JSON(http.StatusNoContent, gin.H{})
 }
 
+/**
+ * Refreshes API Key & updates ACL & user table entries
+ *
+ * @params c *gin.Context
+ */
 func GenerateAPIKeyHandler(c *gin.Context) {
 	apiKey, err := utils.GenerateAPIKey()
 	if err != nil {
@@ -336,6 +379,7 @@ func GenerateAPIKeyHandler(c *gin.Context) {
 		return
 	}
 
+	// Update APIKey in user and ACL tables
 	err = db.IotDb.Db.Model(&models.User{}).Where("user_id = ?", userId).Update("api_key", hashedKey).Error
 	if err != nil {
 		log.Println(err)
@@ -345,7 +389,6 @@ func GenerateAPIKeyHandler(c *gin.Context) {
 		})
 		return
 	}
-
 	err = db.IotDb.Db.Model(&models.KafkaACL{}).Where("user_id = ?", userId).Update("api_key", hashedKey).Error
 	if err != nil {
 		log.Println(err)

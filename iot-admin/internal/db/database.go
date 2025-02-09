@@ -27,6 +27,9 @@ type DbInstance struct { // DbInstance holds ref to a type that implements Datab
 
 var IotDb DbInstance
 
+/**
+ * Migrates Device model to postgres
+ */
 func DeviceMigrate() {
 	err := IotDb.Db.AutoMigrate(&models.Device{})
 	if err != nil {
@@ -35,6 +38,9 @@ func DeviceMigrate() {
 	log.Println("User table migration complete")
 }
 
+/**
+ * Migrates Kafka ACL model to postgres
+ */
 func ACLMigrate() {
 	err := IotDb.Db.AutoMigrate(&models.KafkaACL{})
 	if err != nil {
@@ -43,6 +49,9 @@ func ACLMigrate() {
 	log.Println("ACL table migration complete")
 }
 
+/**
+ * Connects to db with env vars & stores ref to connection in IotDb
+ */
 func Connect() {
 	dsn := fmt.Sprintf("host=db user=%s password=%s dbname=%s port=%v sslmode=disable TimeZone=UTC",
 		os.Getenv("DB_USER"),

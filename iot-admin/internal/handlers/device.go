@@ -13,6 +13,9 @@ import (
 	"github.com/google/uuid"
 )
 
+/**
+ * Admin handler Res/Req body structs
+ */
 type DeviceBody struct {
 	DeviceName string `json:"deviceName"`
 }
@@ -22,12 +25,22 @@ type DeviceRes struct {
 	DeviceID   string `json:"deviceID"`
 }
 
+/**
+ * Admin service health check
+ */
 func HealthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Health OK",
 	})
 }
 
+/**
+ * Registers devices & stores them in db
+ *
+ * Associates device to user api key to create ACLs for each topic
+ *
+ * Creates new kafka topic for the device
+ */
 func RegisterDeviceHandler(c *gin.Context) {
 	var requestBody DeviceBody
 	validate := validator.New()
@@ -146,6 +159,10 @@ func RegisterDeviceHandler(c *gin.Context) {
 	})
 }
 
+/**
+ * Gets all user devices, or if 'id' query parameter is sent,
+ * gets single device
+ */
 func GetDevicesHandler(c *gin.Context) {
 	deviceId := c.DefaultQuery("id", "")
 	userId, exists := c.Get("userID")
@@ -195,6 +212,11 @@ func GetDevicesHandler(c *gin.Context) {
 	})
 }
 
+/**
+ * Deletes single device from 'id' query parameter
+ *
+ * deletes associated ACLs & kafka topic
+ */
 func DeleteDeviceHandler(c *gin.Context) {
 	deviceId := c.DefaultQuery("id", "")
 	userId, exists := c.Get("userID")

@@ -8,6 +8,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+/**
+ * Prometheus metric monitoring
+ *
+ * HttpRequestDuration: time taken to process a request
+ * HttpRequestStatus: running total of status codes for all requests
+ */
 var (
 	HttpRequestDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
