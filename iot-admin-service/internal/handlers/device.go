@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/RaghibA/iot-telemetry/iot-admin-service-service/internal/db"
-	"github.com/RaghibA/iot-telemetry/iot-admin-service-service/internal/kafka"
-	"github.com/RaghibA/iot-telemetry/iot-admin-service-service/internal/models"
+	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/db"
+	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/kafka"
+	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"

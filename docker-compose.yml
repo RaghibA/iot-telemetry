@@ -99,6 +99,28 @@ services:
       - db
       - kafka
 
+  iot-data-service:
+    env_file:
+      - .env
+    build:
+      context: ./iot-data-service
+    environment:
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_PORT=${POSTGRES_PORT}
+      - PORT=${IOT_DATA_PORT}
+      - HOST=${IOT_DATA_HOST}
+      - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_PORT=${KAFKA_PORT}
+      - KAFKA_HOST=${KAFKA_HOST}
+    ports:
+      - "${IOT_DATA_PORT}:${IOT_DATA_PORT}"
+    restart: always
+    depends_on:
+      - db
+      - kafka
+
 volumes:
   iot-telemetry-postgres:
   kafka_data:

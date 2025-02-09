@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/RaghibA/iot-telemetry/iot-admin-service-service/internal/db"
-	"github.com/RaghibA/iot-telemetry/iot-admin-service-service/internal/routes"
+	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/db"
+	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/routes"
 	"github.com/gin-gonic/gin"
 )
 

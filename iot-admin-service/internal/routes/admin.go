@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/RaghibA/iot-telemetry/iot-admin-service-service/internal/handlers"
-	"github.com/RaghibA/iot-telemetry/iot-admin-service-service/internal/middleware"
+	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/handlers"
+	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 

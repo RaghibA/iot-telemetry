@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/RaghibA/iot-telemetry/iot-admin-service-service/internal/utils"
+	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 

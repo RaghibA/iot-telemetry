@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/RaghibA/iot-telemetry/iot-admin-service/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -26,28 +25,6 @@ type DbInstance struct { // DbInstance holds ref to a type that implements Datab
 }
 
 var IotDb DbInstance
-
-/**
- * Migrates Device model to postgres
- */
-func DeviceMigrate() {
-	err := IotDb.Db.AutoMigrate(&models.Device{})
-	if err != nil {
-		log.Println("failed to auto-migrate device model:", err)
-	}
-	log.Println("User table migration complete")
-}
-
-/**
- * Migrates Kafka ACL model to postgres
- */
-func ACLMigrate() {
-	err := IotDb.Db.AutoMigrate(&models.KafkaACL{})
-	if err != nil {
-		log.Println("failed to auto-migrate ACL model:", err)
-	}
-	log.Println("ACL table migration complete")
-}
 
 /**
  * Connects to db with env vars & stores ref to connection in IotDb
