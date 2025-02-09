@@ -9,8 +9,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - iot-admin
-      - authn-service
+      - iot-admin-service
+      - auth-service
 
   zookeeper:
     image: bitnami/zookeeper:3.7
@@ -33,7 +33,6 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      # - ADVERTISED_HOST=localhost
       - ALLOW_PLAINTEXT_LISTENER=yes
     healthcheck:
       test: [ "CMD-SHELL", "kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --list" ]
@@ -59,11 +58,11 @@ services:
     volumes:
       - iot-telemetry-postgres:/var/lib/postgresql/data
 
-  authn-service:
+  auth-service:
     env_file:
       - .env
     build:
-      context: ./authn-service
+      context: ./auth-service
     environment:
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
@@ -78,11 +77,11 @@ services:
     depends_on:
       - db
 
-  iot-admin:
+  iot-admin-service:
     env_file:
       - .env
     build:
-      context: ./iot-admin
+      context: ./iot-admin-service
     environment:
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
