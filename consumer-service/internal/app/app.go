@@ -12,6 +12,9 @@ import (
 	"github.com/RaghibA/iot-telemetry/consumer-service/internal/middleware"
 )
 
+/**
+ * Init app here
+ */
 func Run() {
 	log.Println("Starting consumer service")
 

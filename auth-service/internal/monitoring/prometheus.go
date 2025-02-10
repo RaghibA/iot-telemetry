@@ -34,7 +34,7 @@ var (
 )
 
 func InitPrometheus() {
-	prometheus.MustRegister(HttpRequestDuration)
+	prometheus.MustRegister(HttpRequestDuration, HttpRequestStatus)
 	log.Println("Prometheus Collector Registered")
 }
 

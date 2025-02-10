@@ -10,8 +10,16 @@ import (
 
 type UserKey struct{}
 
+/**
+ * Authentication middleware for access token
+ *
+ * @params next http.HandlerFunc: next handler to be executed
+ * 	after middleware checks are complete
+ * @output http.handlerFunc: returns the authn handler
+ */
 func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// func closure makes enclosing scope vars accessible
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			http.Error(w, "Authorization header missing", http.StatusUnauthorized)

@@ -9,6 +9,13 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+/**
+ * Consumes messages from device topic
+ *
+ * @params (topic, deviceID, conn): topicname for given deviceID,
+ * 	ref to websocket conn. Used to send write kafka message directly
+ * 	to client
+ */
 func ConsumeFromTopic(topic string, deviceID string, conn *websocket.Conn) {
 	broker := fmt.Sprintf("%s:%s", os.Getenv("KAFKA_HOST"), os.Getenv("KAFKA_PORT"))
 
