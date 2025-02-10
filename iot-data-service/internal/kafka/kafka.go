@@ -9,6 +9,14 @@ import (
 	"github.com/IBM/sarama"
 )
 
+/**
+ * creates kafka producer and sends device telemetry data to topic
+ *
+ * @params (payload, topic, deviceId): data from req body, topic name for associated device
+ * 	& deviceId for partioning key
+ *
+ * @output error: if at any point consumer fails abort and return error
+ */
 func SendTelemetry(payload json.RawMessage, topic string, deviceID string) error {
 	broker := []string{fmt.Sprintf("%s:%s", os.Getenv("KAFKA_HOST"), os.Getenv("KAFKA_PORT"))}
 

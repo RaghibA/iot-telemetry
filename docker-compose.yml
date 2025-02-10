@@ -5,11 +5,13 @@ services:
     image: nginx:1.27.4
     container_name: nginx
     ports:
-      - "80:80"  # Exposing port 80 for HTTP traffic
+      - "80:80" # Exposing port 80 for HTTP traffic
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - iot-admin-service
+      - iot-data-service
+      - consumer-service
       - auth-service
 
   zookeeper:
@@ -116,6 +118,28 @@ services:
       - KAFKA_HOST=${KAFKA_HOST}
     ports:
       - "${IOT_DATA_PORT}:${IOT_DATA_PORT}"
+    restart: always
+    depends_on:
+      - db
+      - kafka
+
+  consumer-service:
+    env_file:
+      - .env
+    build:
+      context: ./consumer-service
+    environment:
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_PORT=${POSTGRES_PORT}
+      - PORT=${CONSUMER_PORT}
+      - HOST=${CONSUMER_HOST}
+      - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_PORT=${KAFKA_PORT}
+      - KAFKA_HOST=${KAFKA_HOST}
+    ports:
+      - "${CONSUMER_PORT}:${CONSUMER_PORT}"
     restart: always
     depends_on:
       - db

@@ -10,6 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/**
+ * App entry point
+ *
+ * init program here and run in main
+ */
 func Run() {
 	log.Println("starting data service")
 
