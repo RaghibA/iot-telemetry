@@ -1,0 +1,480 @@
+{
+	"info": {
+		"_postman_id": "9ece6a83-2ca0-479a-b66c-a869ad46bd05",
+		"name": "IoT Telemetry",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41800546"
+	},
+	"item": [
+		{
+			"name": "authn",
+			"item": [
+				{
+					"name": "health check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/auth/health",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"pm.environment.set(\"apiKey\", json.apiKey);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"username\": \"{{username}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/auth/register",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/auth/login",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "access token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"pm.environment.set(\"accessToken\", json.accessToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost/auth/access-token",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"access-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost/auth/logout",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deactivate",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost/auth/deactivate",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"deactivate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generate api key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"pm.environment.set(\"apiKey\", json.apiKey);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/auth/api-key",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"api-key"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "metrics",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `",
+									"<style type=\"text/css\">",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}",
+									"    .tftable tr {background-color:#ffffff;}",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}",
+									"    .tftable tr:hover {background-color:#e0ffff;}",
+									"</style>",
+									"",
+									"<table class=\"tftable\" border=\"1\">",
+									"    <tr>",
+									"        <th>Metric</th>",
+									"        <th>Value</th>",
+									"    </tr>",
+									"    ",
+									"    {{#each response}}",
+									"        <tr>",
+									"            <td>{{@key}}</td>",
+									"            <td>{{this}}</td>",
+									"        </tr>",
+									"    {{/each}}",
+									"</table>",
+									"`;",
+									"",
+									"function constructVisualizerPayload() {",
+									"    var responseText = pm.response.text();",
+									"    var lines = responseText.split(\"\\\\n\");",
+									"    ",
+									"    var visualizerData = {};",
+									"    ",
+									"    lines.forEach((line) => {",
+									"        if (line.includes(\"# HELP\") || line.includes(\"# TYPE\")) {",
+									"            var metricName = line.split(\" \")[2];",
+									"            var metricValue = line.split(\" \")[3];",
+									"            visualizerData[metricName] = metricValue;",
+									"        }",
+									"    });",
+									"    ",
+									"    return {response: visualizerData};",
+									"}",
+									"",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/auth/metrics",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"metrics"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "iot admin",
+			"item": [
+				{
+					"name": "health check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/admin/health",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"pm.environment.set(\"deviceID\", json.deviceID);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"deviceName\": \"test device 4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/admin/device",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"admin",
+								"device"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get devices",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/admin/device",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"admin",
+								"device"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete device",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/admin/device?id=",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"admin",
+								"device"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "iot-telemetry",
+			"item": [
+				{
+					"name": "health check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/telemetry/health",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"telemetry",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send telemetry",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{apiKey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"deviceId\": \"{{deviceID}}\",\n    \"data\": {\n        \"randChar\": \"{{$randomAlphaNumeric}}\",\n        \"data2\": {\"test\":\"test\"},\n        \"data\": [\"1\", \"2\", \"3\"]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/telemetry/send",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"telemetry",
+								"send"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
