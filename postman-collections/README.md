@@ -5,3 +5,11 @@ This collection has every request you need to set up the tools. I've gone ahead 
 Scripts have been added where necessary so you shouldn't have to copy any data from one request to the next.
 
 Postman does not allow export of websocket collections so you will have to set that up. To do this look at the last section of the readme at the project root.
+
+You will need to run the following commands:
+
+ - create user
+ - login
+ - access token
+ - register device
+ - send telemetry
