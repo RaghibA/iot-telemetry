@@ -6,7 +6,7 @@ Scripts have been added where necessary so you shouldn't have to copy any data f
 
 Postman does not allow export of websocket collections so you will have to set that up. To do this look at the last section of the readme at the project root.
 
-You will need to run the following commands:
+You will need to run the following requests:
 
  - create user
  - login
