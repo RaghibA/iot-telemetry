@@ -115,3 +115,9 @@ To use the consumer service, provide 'Authorization' & 'x-device-id' as headers.
     'x-device-id': device-id-for-real-time-analytics
     
     Connect: ws://localhost/consumer/telemetry/consume 
+
+## Unit Tests
+
+Use the following command to run unit tests:
+
+    make test
