@@ -15,16 +15,19 @@ Clone or download this repository and navigate to its root directory.  From ther
 
 Docker Compose will automatically handle volumes & networks as defined in the configuration.
 
-Once the build process is complete, you should see the following **eight containers**:
+Once the build process is complete, you should see the following **11 containers**:
 
  - auth-service-1
- - iot-admin-service-1
- - iot-data-service-1
+ - admin-service-1
+ - data-service-1
  - consumer-service-1
  - iot-telem-db
  - kafka-1
  - zookeeper-1
+ - prometheus
+ - grafana
  - nginx
+ - migration-1 [Inactive]
 
 The following sections will provide detailed instruction on how to use the tool. 
 
