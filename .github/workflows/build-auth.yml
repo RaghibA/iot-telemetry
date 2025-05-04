@@ -27,7 +27,7 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
-          context: ./services/auth
+          context: .
           file: ./services/auth/auth.Dockerfile
           push: true
           tags: ghcr.io/raghiba/iot-telemetry-auth:latest
