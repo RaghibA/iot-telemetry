@@ -125,7 +125,6 @@ func (k *KafkaService) SendTelemetry(payload json.RawMessage, topic string, devi
 
 func (k *KafkaService) ConsumeFromTopic(topic string, deviceID string, conn *websocket.Conn) {
 	broker := fmt.Sprintf("%s:%s", os.Getenv("KAFKA_HOST"), os.Getenv("KAFKA_PORT"))
-
 	consumer, err := sarama.NewConsumer([]string{broker}, nil)
 	if err != nil {
 		log.Println("error creating kafka consumer", err)

@@ -1,0 +1,33 @@
+name: Build and Push Auth Service Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log into GHCR
+        uses: docker/login-actions@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-attempt@v5
+        with:
+          context: ./services/auth
+          file: ./services/auth/auth.Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
