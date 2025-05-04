@@ -1,4 +1,4 @@
-name: Build and Push Admin Service Docker Image
+name: Build Admin
 
 on:
   push:
