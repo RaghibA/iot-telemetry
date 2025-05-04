@@ -30,4 +30,4 @@ jobs:
           context: ./services/auth
           file: ./services/auth/auth.Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/raghiba/iot-telemetry-auth:latest
