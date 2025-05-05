@@ -16,7 +16,7 @@ import (
 // - *pgx.Conn: a pointer to the established database connection
 // - error: error if any occurred during the connection establishment
 func NewDB(config *config.DBConfig) (*pgx.Conn, error) {
-	dsn := fmt.Sprintf("host=db user=%s password=%s dbname=%s port=%v sslmode=disable TimeZone=UTC",
+	dsn := fmt.Sprintf("host=postgres-postgresql user=%s password=%s dbname=%s port=%v sslmode=disable TimeZone=UTC",
 		config.PostgresUser,
 		config.PostgresPass,
 		config.PostgresName,
