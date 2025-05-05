@@ -1,0 +1,21 @@
+name: Deploy Data
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup kubectl and deploy
+      uses: tale/kubectl-action@v1
+      with:
+        base64-kube-config: ${{ secrets.KUBECONFIG_SECRET }}
+    - name: Apply kubernetes Manifests
+      run: |
+        kubectl apply -f k8s/data/deployment.yaml -n iot-telemetry
+        kubectl apply -f k8s/data/service.yaml -n iot-telemetry
+        kubectl apply -f k8s/data/ingress.yaml -n iot-telemetry

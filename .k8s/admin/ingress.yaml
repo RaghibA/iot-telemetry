@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iot-admin
+  namespace: iot-telemetry
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    cert-manager.io/cluster-issuer: "letsencrypt-http01-prod"
+spec:
+  rules:
+  - host: iot-admin.raghiba.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: iot-admin
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - iot-admin.raghiba.com
+    secretName: iot-admin-tls

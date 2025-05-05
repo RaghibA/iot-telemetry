@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iot-auth
+  namespace: iot-telemetry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iot-auth
+  template:
+    metadata:
+      labels:
+        app: iot-auth
+    spec:
+      containers:
+      - name: iot-auth
+        image: ghcr.io/raghiba/iot-telemetry-auth:latest
+        ports:
+        - containerPort: 8080

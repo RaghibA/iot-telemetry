@@ -1,0 +1,21 @@
+name: Deploy Auth
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Setup kubectl and deploy
+      uses: tale/kubectl-action@v1
+      with:
+        base64-kube-config: ${{ secrets.KUBECONFIG_SECRET }}
+    - name: Apply kubernetes Manifests
+      run: |
+        kubectl apply -f k8s/auth/deployment.yaml -n iot-telemetry
+        kubectl apply -f k8s/auth/service.yaml -n iot-telemetry
+        kubectl apply -f k8s/auth/ingress.yaml -n iot-telemetry
