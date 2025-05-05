@@ -14,6 +14,6 @@ jobs:
           base64-kube-config: ${{ secrets.KUBECONFIG_SECRET }}
       - name: Apply kubernetes Manifests
         run: |
-          kubectl apply -f k8s/consumer/deployment.yaml -n iot-telemetry
-          kubectl apply -f k8s/consumer/service.yaml -n iot-telemetry
-          kubectl apply -f k8s/consumer/ingress.yaml -n iot-telemetry
+          kubectl apply -f .k8s/consumer/deployment.yaml -n iot-telemetry
+          kubectl apply -f .k8s/consumer/service.yaml -n iot-telemetry
+          kubectl apply -f .k8s/consumer/ingress.yaml -n iot-telemetry
