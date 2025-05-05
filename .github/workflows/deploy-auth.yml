@@ -1,7 +1,5 @@
 name: Deploy Auth
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
