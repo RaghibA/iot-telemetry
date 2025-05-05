@@ -18,3 +18,24 @@ spec:
         image: ghcr.io/raghiba/iot-telemetry-admin:latest
         ports:
         - containerPort: 8081
+        env:
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: admin-postgres-secret
+                key: POSTGRES_USER
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: admin-postgres-secret
+                key: POSTGRES_PASSWORD
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: admin-postgres-secret
+                key: POSTGRES_DB
+          - name: DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: admin-postgres-secret
+                key: POSTGRES_PORT
