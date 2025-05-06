@@ -49,3 +49,8 @@ spec:
               secretKeyRef:
                 name: admin-postgres-secret
                 key: PORT
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: admin-postgres-secret
+                key: JWT_SECRET
