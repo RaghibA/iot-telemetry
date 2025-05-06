@@ -39,3 +39,13 @@ spec:
               secretKeyRef:
                 name: admin-postgres-secret
                 key: POSTGRES_PORT
+          - name: HOST
+            valueFrom:
+              secretKeyRef:
+                name: admin-postgres-secret
+                key: HOST
+          - name: PORT
+            valueFrom:
+              secretKeyRef:
+                name: admin-postgres-secret
+                key: PORT
