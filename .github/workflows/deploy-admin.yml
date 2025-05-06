@@ -21,6 +21,8 @@ jobs:
             --from-literal=POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
             --from-literal=POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
             --from-literal=POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} \
+            --from-literal=HOST=${{ secrets.IOT_ADMIN_HOST}} \
+            --from-literal=PORT=${{ secrets.IOT_ADMIN_PORT}} \
             -n iot-telemetry --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Apply Kubernetes Manifests
