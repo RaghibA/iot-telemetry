@@ -22,35 +22,35 @@ spec:
           - name: DB_USER
             valueFrom:
               secretKeyRef:
-                name: admin-postgres-secret
+                name: admin-secret
                 key: POSTGRES_USER
           - name: DB_PASS
             valueFrom:
               secretKeyRef:
-                name: admin-postgres-secret
+                name: admin-secret
                 key: POSTGRES_PASSWORD
           - name: DB_NAME
             valueFrom:
               secretKeyRef:
-                name: admin-postgres-secret
+                name: admin-secret
                 key: POSTGRES_DB
           - name: DB_PORT
             valueFrom:
               secretKeyRef:
-                name: admin-postgres-secret
+                name: admin-secret
                 key: POSTGRES_PORT
           - name: HOST
             valueFrom:
               secretKeyRef:
-                name: admin-postgres-secret
+                name: admin-secret
                 key: HOST
           - name: PORT
             valueFrom:
               secretKeyRef:
-                name: admin-postgres-secret
+                name: admin-secret
                 key: PORT
           - name: JWT_SECRET
             valueFrom:
               secretKeyRef:
-                name: admin-postgres-secret
+                name: admin-secret
                 key: JWT_SECRET
